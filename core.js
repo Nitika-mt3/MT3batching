@@ -4,7 +4,7 @@
 window.PB = (function () {
   const PB = { data:{}, state:{}, views:{}, routes:[
     'dashboard','orders','bulk','batch','buckets','batches','rules','templates','skus','printers','workcenters' ] };
-  const LS = 'pb.state.v3';   // v3: curated Classic-sublimation + Amazon-bulk demo data (sample rules/orders/HP-mirror deleted)
+  const LS = 'pb.state.v4';   // v4: enlarged scan pool (+52 items) so 'Simulate scan' has plenty to pull; supersedes v3 curated demo
 
   /* ---------- identity: logged-in account + selectable operator (activities record BOTH) ---------- */
   PB.user = { name:'Nitika Jain', email:'nitikaj@getmt3.com', initials:'NJ' };   // logged-in account
