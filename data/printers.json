@@ -1,0 +1,624 @@
+[
+ {
+  "id": "PR1",
+  "name": "P6000 — Line 1 · 01",
+  "deviceName": "EPSON SureColor P6000 · 6-up Sublimation",
+  "type": "Sublimation press",
+  "model": "P6000",
+  "protocol": "JDF",
+  "status": "available",
+  "connection": "192.168.10.51",
+  "location": "Line 1",
+  "serial": "P6000-2025-01",
+  "events": [
+   "Print"
+  ],
+  "capabilities": [
+   "6-up",
+   "4-up"
+  ],
+  "max_width_mm": 318,
+  "max_height_mm": 646,
+  "media": [
+   "Sublimation paper",
+   "Polyester"
+  ],
+  "active": true,
+  "notes": "Primary press — warm up 30 min before shift."
+ },
+ {
+  "id": "PR2",
+  "name": "P6000 — Line 2 · 02",
+  "deviceName": "EPSON SureColor P6000 · 6-up Sublimation",
+  "type": "Sublimation press",
+  "model": "P6000",
+  "protocol": "JDF",
+  "status": "available",
+  "connection": "192.168.10.52",
+  "location": "Line 2",
+  "serial": "P6000-2025-02",
+  "events": [
+   "Print"
+  ],
+  "capabilities": [
+   "6-up",
+   "4-up"
+  ],
+  "max_width_mm": 318,
+  "max_height_mm": 646,
+  "media": [
+   "Sublimation paper",
+   "Polyester"
+  ],
+  "active": true,
+  "notes": ""
+ },
+ {
+  "id": "PR3",
+  "name": "P6000 — Line 3 · 03",
+  "deviceName": "EPSON SureColor P6000 · 6-up Sublimation",
+  "type": "Sublimation press",
+  "model": "P6000",
+  "protocol": "JDF",
+  "status": "available",
+  "connection": "192.168.10.53",
+  "location": "Line 3",
+  "serial": "P6000-2025-03",
+  "events": [
+   "Print"
+  ],
+  "capabilities": [
+   "6-up",
+   "4-up"
+  ],
+  "max_width_mm": 318,
+  "max_height_mm": 646,
+  "media": [
+   "Sublimation paper",
+   "Polyester"
+  ],
+  "active": true,
+  "notes": ""
+ },
+ {
+  "id": "PR4",
+  "name": "P6000 — Line 4 · 04",
+  "deviceName": "EPSON SureColor P6000 · 6-up Sublimation",
+  "type": "Sublimation press",
+  "model": "P6000",
+  "protocol": "JDF",
+  "status": "busy",
+  "connection": "192.168.10.54",
+  "location": "Line 4",
+  "serial": "P6000-2025-04",
+  "events": [
+   "Print"
+  ],
+  "capabilities": [
+   "6-up",
+   "4-up"
+  ],
+  "max_width_mm": 318,
+  "max_height_mm": 646,
+  "media": [
+   "Sublimation paper",
+   "Polyester"
+  ],
+  "active": true,
+  "notes": ""
+ },
+ {
+  "id": "PR5",
+  "name": "P6000 — Line 5 · 05",
+  "deviceName": "EPSON SureColor P6000 · 6-up Sublimation",
+  "type": "Sublimation press",
+  "model": "P6000",
+  "protocol": "JDF",
+  "status": "maintenance",
+  "connection": "192.168.10.55",
+  "location": "Mezzanine",
+  "serial": "P6000-2025-05",
+  "events": [
+   "Print"
+  ],
+  "capabilities": [
+   "6-up",
+   "4-up"
+  ],
+  "max_width_mm": 318,
+  "max_height_mm": 646,
+  "media": [
+   "Sublimation paper",
+   "Polyester"
+  ],
+  "active": true,
+  "notes": ""
+ },
+ {
+  "id": "PR6",
+  "name": "P6000 — Line 6 · 06",
+  "deviceName": "EPSON SureColor P6000 · 6-up Sublimation",
+  "type": "Sublimation press",
+  "model": "P6000",
+  "protocol": "JDF",
+  "status": "offline",
+  "connection": "192.168.10.56",
+  "location": "Shipping Dock",
+  "serial": "P6000-2025-06",
+  "events": [
+   "Print"
+  ],
+  "capabilities": [
+   "6-up",
+   "4-up"
+  ],
+  "max_width_mm": 318,
+  "max_height_mm": 646,
+  "media": [
+   "Sublimation paper",
+   "Polyester"
+  ],
+  "active": true,
+  "notes": ""
+ },
+ {
+  "id": "PR7",
+  "name": "P6000 — Line 1 · 07",
+  "deviceName": "EPSON SureColor P6000 · 6-up Sublimation",
+  "type": "Sublimation press",
+  "model": "P6000",
+  "protocol": "JDF",
+  "status": "available",
+  "connection": "192.168.10.57",
+  "location": "Line 1",
+  "serial": "P6000-2025-07",
+  "events": [
+   "Print"
+  ],
+  "capabilities": [
+   "6-up",
+   "4-up"
+  ],
+  "max_width_mm": 318,
+  "max_height_mm": 646,
+  "media": [
+   "Sublimation paper",
+   "Polyester"
+  ],
+  "active": true,
+  "notes": ""
+ },
+ {
+  "id": "PR8",
+  "name": "P6000 — Line 2 · 08",
+  "deviceName": "EPSON SureColor P6000 · 6-up Extended Sublimation",
+  "type": "Sublimation press",
+  "model": "P6000",
+  "protocol": "JDF",
+  "status": "available",
+  "connection": "192.168.10.58",
+  "location": "Line 2",
+  "serial": "P6000-2025-08",
+  "events": [
+   "Print"
+  ],
+  "capabilities": [
+   "6-up",
+   "6-up Extended"
+  ],
+  "max_width_mm": 318,
+  "max_height_mm": 706.5,
+  "media": [
+   "Sublimation paper",
+   "Polyester"
+  ],
+  "active": true,
+  "notes": ""
+ },
+ {
+  "id": "PR9",
+  "name": "P6000 — Line 3 · 09",
+  "deviceName": "EPSON SureColor P6000 · 6-up Extended Sublimation",
+  "type": "Sublimation press",
+  "model": "P6000",
+  "protocol": "JDF",
+  "status": "available",
+  "connection": "192.168.10.59",
+  "location": "Line 3",
+  "serial": "P6000-2025-09",
+  "events": [
+   "Print"
+  ],
+  "capabilities": [
+   "6-up",
+   "6-up Extended"
+  ],
+  "max_width_mm": 318,
+  "max_height_mm": 706.5,
+  "media": [
+   "Sublimation paper",
+   "Polyester"
+  ],
+  "active": true,
+  "notes": ""
+ },
+ {
+  "id": "PR10",
+  "name": "P6000 — Line 4 · 10",
+  "deviceName": "EPSON SureColor P6000 · 6-up Extended Sublimation",
+  "type": "Sublimation press",
+  "model": "P6000",
+  "protocol": "JDF",
+  "status": "available",
+  "connection": "192.168.10.60",
+  "location": "Line 4",
+  "serial": "P6000-2025-10",
+  "events": [
+   "Print"
+  ],
+  "capabilities": [
+   "6-up",
+   "6-up Extended"
+  ],
+  "max_width_mm": 318,
+  "max_height_mm": 706.5,
+  "media": [
+   "Sublimation paper",
+   "Polyester"
+  ],
+  "active": true,
+  "notes": ""
+ },
+ {
+  "id": "PR11",
+  "name": "P7000 — Line 1 · 01",
+  "deviceName": "EPSON SureColor P7000 · 6-up Sublimation",
+  "type": "Sublimation press",
+  "model": "P7000",
+  "protocol": "JDF",
+  "status": "busy",
+  "connection": "192.168.11.51",
+  "location": "Line 1",
+  "serial": "P7000-2025-01",
+  "events": [
+   "Print"
+  ],
+  "capabilities": [
+   "6-up",
+   "4-up"
+  ],
+  "max_width_mm": 318,
+  "max_height_mm": 646,
+  "media": [
+   "Sublimation paper",
+   "Polyester"
+  ],
+  "active": true,
+  "notes": "Primary press — warm up 30 min before shift."
+ },
+ {
+  "id": "PR12",
+  "name": "P7000 — Line 2 · 02",
+  "deviceName": "EPSON SureColor P7000 · 6-up Sublimation",
+  "type": "Sublimation press",
+  "model": "P7000",
+  "protocol": "JDF",
+  "status": "maintenance",
+  "connection": "192.168.11.52",
+  "location": "Line 2",
+  "serial": "P7000-2025-02",
+  "events": [
+   "Print"
+  ],
+  "capabilities": [
+   "6-up",
+   "4-up"
+  ],
+  "max_width_mm": 318,
+  "max_height_mm": 646,
+  "media": [
+   "Sublimation paper",
+   "Polyester"
+  ],
+  "active": true,
+  "notes": ""
+ },
+ {
+  "id": "PR13",
+  "name": "P7000 — Line 3 · 03",
+  "deviceName": "EPSON SureColor P7000 · 6-up Sublimation",
+  "type": "Sublimation press",
+  "model": "P7000",
+  "protocol": "JDF",
+  "status": "offline",
+  "connection": "192.168.11.53",
+  "location": "Line 3",
+  "serial": "P7000-2025-03",
+  "events": [
+   "Print"
+  ],
+  "capabilities": [
+   "6-up",
+   "4-up"
+  ],
+  "max_width_mm": 318,
+  "max_height_mm": 646,
+  "media": [
+   "Sublimation paper",
+   "Polyester"
+  ],
+  "active": true,
+  "notes": ""
+ },
+ {
+  "id": "PR14",
+  "name": "P7000 — Line 4 · 04",
+  "deviceName": "EPSON SureColor P7000 · 6-up Sublimation",
+  "type": "Sublimation press",
+  "model": "P7000",
+  "protocol": "JDF",
+  "status": "available",
+  "connection": "192.168.11.54",
+  "location": "Line 4",
+  "serial": "P7000-2025-04",
+  "events": [
+   "Print"
+  ],
+  "capabilities": [
+   "6-up",
+   "4-up"
+  ],
+  "max_width_mm": 318,
+  "max_height_mm": 646,
+  "media": [
+   "Sublimation paper",
+   "Polyester"
+  ],
+  "active": true,
+  "notes": ""
+ },
+ {
+  "id": "PR15",
+  "name": "P7000 — Line 5 · 05",
+  "deviceName": "EPSON SureColor P7000 · 6-up Sublimation",
+  "type": "Sublimation press",
+  "model": "P7000",
+  "protocol": "JDF",
+  "status": "available",
+  "connection": "192.168.11.55",
+  "location": "Mezzanine",
+  "serial": "P7000-2025-05",
+  "events": [
+   "Print"
+  ],
+  "capabilities": [
+   "6-up",
+   "4-up"
+  ],
+  "max_width_mm": 318,
+  "max_height_mm": 646,
+  "media": [
+   "Sublimation paper",
+   "Polyester"
+  ],
+  "active": true,
+  "notes": ""
+ },
+ {
+  "id": "PR16",
+  "name": "P7000 — Line 6 · 06",
+  "deviceName": "EPSON SureColor P7000 · 6-up Sublimation",
+  "type": "Sublimation press",
+  "model": "P7000",
+  "protocol": "JDF",
+  "status": "available",
+  "connection": "192.168.11.56",
+  "location": "Shipping Dock",
+  "serial": "P7000-2025-06",
+  "events": [
+   "Print"
+  ],
+  "capabilities": [
+   "6-up",
+   "4-up"
+  ],
+  "max_width_mm": 318,
+  "max_height_mm": 646,
+  "media": [
+   "Sublimation paper",
+   "Polyester"
+  ],
+  "active": true,
+  "notes": ""
+ },
+ {
+  "id": "PR17",
+  "name": "P7000 — Line 1 · 07",
+  "deviceName": "EPSON SureColor P7000 · 6-up Extended Sublimation",
+  "type": "Sublimation press",
+  "model": "P7000",
+  "protocol": "JDF",
+  "status": "available",
+  "connection": "192.168.11.57",
+  "location": "Line 1",
+  "serial": "P7000-2025-07",
+  "events": [
+   "Print"
+  ],
+  "capabilities": [
+   "6-up",
+   "6-up Extended"
+  ],
+  "max_width_mm": 318,
+  "max_height_mm": 706.5,
+  "media": [
+   "Sublimation paper",
+   "Polyester"
+  ],
+  "active": true,
+  "notes": ""
+ },
+ {
+  "id": "PR18",
+  "name": "P7000 — Line 2 · 08",
+  "deviceName": "EPSON SureColor P7000 · 6-up Extended Sublimation",
+  "type": "Sublimation press",
+  "model": "P7000",
+  "protocol": "JDF",
+  "status": "busy",
+  "connection": "192.168.11.58",
+  "location": "Line 2",
+  "serial": "P7000-2025-08",
+  "events": [
+   "Print"
+  ],
+  "capabilities": [
+   "6-up",
+   "6-up Extended"
+  ],
+  "max_width_mm": 318,
+  "max_height_mm": 706.5,
+  "media": [
+   "Sublimation paper",
+   "Polyester"
+  ],
+  "active": true,
+  "notes": ""
+ },
+ {
+  "id": "PR19",
+  "name": "P7000 — Line 3 · 09",
+  "deviceName": "EPSON SureColor P7000 · 6-up Extended Sublimation",
+  "type": "Sublimation press",
+  "model": "P7000",
+  "protocol": "JDF",
+  "status": "maintenance",
+  "connection": "192.168.11.59",
+  "location": "Line 3",
+  "serial": "P7000-2025-09",
+  "events": [
+   "Print"
+  ],
+  "capabilities": [
+   "6-up",
+   "6-up Extended"
+  ],
+  "max_width_mm": 318,
+  "max_height_mm": 706.5,
+  "media": [
+   "Sublimation paper",
+   "Polyester"
+  ],
+  "active": true,
+  "notes": ""
+ },
+ {
+  "id": "PR20",
+  "name": "P7000 — Line 4 · 10",
+  "deviceName": "EPSON SureColor P7000 · 6-up Extended Sublimation",
+  "type": "Sublimation press",
+  "model": "P7000",
+  "protocol": "JDF",
+  "status": "offline",
+  "connection": "192.168.11.60",
+  "location": "Line 4",
+  "serial": "P7000-2025-10",
+  "events": [
+   "Print"
+  ],
+  "capabilities": [
+   "6-up",
+   "6-up Extended"
+  ],
+  "max_width_mm": 318,
+  "max_height_mm": 706.5,
+  "media": [
+   "Sublimation paper",
+   "Polyester"
+  ],
+  "active": true,
+  "notes": ""
+ },
+ {
+  "id": "PR21",
+  "name": "ZDesigner ZD421-01",
+  "deviceName": "ZDesigner ZD421-300dpi ZPL",
+  "type": "Label / greensheet (ZPL)",
+  "model": "ZD421",
+  "protocol": "ZPL",
+  "status": "available",
+  "connection": "192.168.20.11",
+  "location": "Shipping Dock",
+  "serial": "ZBR-ZD421-40",
+  "events": [
+   "Label",
+   "Pack"
+  ],
+  "capabilities": [
+   "1-up",
+   "label-strip"
+  ],
+  "max_width_mm": 104,
+  "max_height_mm": 152,
+  "media": [
+   "Thermal label"
+  ],
+  "active": true,
+  "notes": "Greensheets + batch labels + shipping labels."
+ },
+ {
+  "id": "PR22",
+  "name": "ZDesigner ZD421-02",
+  "deviceName": "ZDesigner ZD421-300dpi ZPL",
+  "type": "Label / greensheet (ZPL)",
+  "model": "ZD421",
+  "protocol": "ZPL",
+  "status": "available",
+  "connection": "zebra-line2.local",
+  "location": "Line 2",
+  "serial": "ZBR-ZD421-41",
+  "events": [
+   "Label",
+   "Pack"
+  ],
+  "capabilities": [
+   "1-up",
+   "label-strip"
+  ],
+  "max_width_mm": 104,
+  "max_height_mm": 152,
+  "media": [
+   "Thermal label"
+  ],
+  "active": true,
+  "notes": "Greensheets + batch labels + shipping labels."
+ },
+ {
+  "id": "PR23",
+  "name": "EPSON SC-P6000 · UV",
+  "deviceName": "EPSON SC-P6000 · UV / large format",
+  "type": "UV / large format",
+  "model": "SC-P6000",
+  "protocol": "IPP",
+  "status": "available",
+  "connection": "192.168.10.90",
+  "location": "Mezzanine",
+  "serial": "SCP6000-2025-01",
+  "events": [
+   "Print"
+  ],
+  "capabilities": [
+   "iPad",
+   "Laptop",
+   "large"
+  ],
+  "max_width_mm": 2180.8,
+  "max_height_mm": 1221.2,
+  "media": [
+   "UV rigid",
+   "Acrylic"
+  ],
+  "active": true,
+  "notes": ""
+ }
+]
