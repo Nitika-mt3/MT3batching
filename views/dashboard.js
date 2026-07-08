@@ -49,7 +49,7 @@ PB.view('dashboard', (v) => {
     const reprintItems = (D.items || []).filter(i => /reprint/i.test(i.case_type || '')).length + S.batches.filter(b => b.mode === 'reprint').length;
     const nearClose = S.buckets.filter(b => b.progress >= 80).length;
     return `<div class="metric-row">
-      ${metric('blue', '◳', 'Items waiting', waiting, 'ready to scan &amp; batch', 'batch')}
+      ${metric('blue', '◳', 'Items waiting', waiting, 'ready to scan &amp; batch', 'reprints')}
       ${metric('orange', '◴', 'Open buckets', openBuckets, `${nearClose} near close (≥80%)`, 'buckets')}
       ${metric('green', '▥', 'Live batches', liveBatches, `${PB.fmt.num(totalUnits)} units in production`, 'batches')}
       ${metric('red', '⟲', 'Reprints', reprintItems, 'in the recent window', '')}</div>`;
@@ -102,7 +102,7 @@ PB.view('dashboard', (v) => {
     v.innerHTML = PB.pageHead({
       title: 'Dashboard',
       sub: `Live batching queue health · ${PB.fmt.num((D.items || []).length)} recent items · ${PB.fmt.num((D.rules || []).length)} rules`,
-      actions: `<button class="btn outline" id="dashCustomize">${editing ? '✓ Done' : '⚙ Customize'}</button><button class="btn primary" data-go="batch">⊹ Start batching</button>`,
+      actions: `<button class="btn outline" id="dashCustomize">${editing ? '✓ Done' : '⚙ Customize'}</button><button class="btn primary" data-go="reprints">⊹ Start batching</button>`,
     })
       + `<div class="cd-grid ${editing ? 'editing' : ''}" id="dgrid">${on.map(frame).join('') || '<div class="empty">No widgets — click Customize to add some.</div>'}</div>`
       + (editing ? `<div class="cd-avail"><div class="cd-avail-t">Available widgets</div>

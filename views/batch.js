@@ -22,13 +22,15 @@
 
     v.innerHTML = `
       <div class="page-head">
-        <div><h1 class="page-title">Direct</h1><p class="page-sub">Scan → match rule → route to batch. Automatic &amp; Manual batching. Reprint scans batch on your click (source #4).</p></div>
+        <div>
+          <h1 class="page-title">${mode === 'auto' ? 'Reprints' : 'Manual upload'}</h1>
+          <p class="page-sub">${mode === 'auto'
+            ? 'Automatic batching — scan an item barcode / order # to match its rule and route to a batch. Toggle “Reprint scan” to batch scans as reprints (source #4).'
+            : 'Manual batching — build sheets by hand from scanned items or uploaded design / colour-test files; manual sheets skip the bucket and go straight to a batch.'}</p>
+        </div>
         <div class="spacer"></div>
         <div class="page-actions">
-          <div class="seg" id="modeSeg">
-            <button class="${mode === 'auto' ? 'active' : ''}" data-m="auto">Automatic</button>
-            <button class="${mode === 'manual' ? 'active' : ''}" data-m="manual">Manual</button>
-          </div>
+          <a class="btn ghost sm" href="#/${mode === 'auto' ? 'manual' : 'reprints'}">${mode === 'auto' ? 'Manual upload →' : '← Reprints'}</a>
         </div>
       </div>
 
@@ -325,7 +327,6 @@
   }
 
   function wire(v) {
-    PB.qsa('#modeSeg button').forEach(b => b.onclick = () => { mode = b.dataset.m; rootRender(v); });
     { const tr = PB.qs('#tgReprint'); if (tr) tr.onclick = () => { scanReprint = !scanReprint; rootRender(v); }; }
     const si = PB.qs('#scanInput'); if (si) { si.focus(); si.onkeydown = e => { if (e.key === 'Enter') { doScan(si.value); si.value = ''; } }; }
     PB.qs('#simScan').onclick = () => { if (!PB.state.pool.length) return PB.toast('Pool empty', 'warn'); addItem(PB.state.pool[Math.floor(Math.random() * Math.min(PB.state.pool.length, 30))]); };
@@ -348,5 +349,7 @@
     wireRows(); updateBulkUI();
   }
 
-  PB.view('batch', rootRender);
+  // two entry surfaces from the second bar: Reprints = automatic batching, Manual upload = manual batching
+  PB.view('reprints', v => { mode = 'auto';   rootRender(v); });
+  PB.view('manual',   v => { mode = 'manual'; rootRender(v); });
 })();

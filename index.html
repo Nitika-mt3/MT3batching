@@ -11,7 +11,8 @@
   <!-- Top app bar -->
   <header class="topbar">
     <button class="iconbtn nav-toggle" id="navToggle" aria-label="Menu">☰</button>
-    <a class="brand" href="#/dashboard"><span class="brand-mark">◧</span> Pulse <b>Batching</b></a>
+    <a class="brand" href="#/batches"><span class="brand-mark">◧</span> Pulse <b>Batching</b></a>
+    <button class="area-btn active" id="prodArea" data-area="production" title="Production module">Production</button>
     <div class="global-search" id="gsWrap">
       <span class="gs-ic" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></span>
       <input id="globalSearch" type="search" placeholder="Search order #, barcode, SKU, model, case type, print code, batch…" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="gsPanel" aria-label="Global search" />
@@ -25,24 +26,49 @@
     </div>
   </header>
 
+  <!-- Production sub-nav (second bar): the three work-intake surfaces -->
+  <nav class="subnav" id="subnav" aria-label="Production work surfaces">
+    <a class="subnav-item" data-route="orders" href="#/orders">Orders</a>
+    <a class="subnav-item" data-route="reprints" href="#/reprints">Reprints</a>
+    <a class="subnav-item" data-route="manual" href="#/manual">Manual upload</a>
+  </nav>
+
   <div class="layout">
     <!-- Left navigation -->
     <nav class="sidenav" id="sidenav">
-      <div class="nav-section">Overview</div>
-      <a class="nav-item" data-route="dashboard" href="#/dashboard"><span class="ni-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg></span><span class="ni-label">Dashboard</span></a>
-      <div class="nav-section">Inputs</div>
-      <a class="nav-item" data-route="orders" href="#/orders"><span class="ni-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h6"/></svg></span><span class="ni-label">Orders</span></a>
-      <a class="nav-item" data-route="bulk" href="#/bulk"><span class="ni-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg></span><span class="ni-label">Amazon Bulk</span></a>
-      <a class="nav-item" data-route="batch" href="#/batch"><span class="ni-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M7 12h10"/></svg></span><span class="ni-label">Direct</span> <span class="ni-tag" id="navScanCount"></span></a>
-      <div class="nav-section">Production</div>
+      <div class="nav-section">Batches</div>
       <a class="nav-item" data-route="buckets" href="#/buckets"><span class="ni-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="m12 2 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5"/><path d="m3 17 9 5 9-5"/></svg></span><span class="ni-label">Buckets</span> <span class="ni-badge" id="navBucketCount"></span></a>
       <a class="nav-item" data-route="batches" href="#/batches"><span class="ni-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3" y="3" width="18" height="7" rx="1.5"/><rect x="3" y="14" width="18" height="7" rx="1.5"/></svg></span><span class="ni-label">Batches</span></a>
-      <div class="nav-section">Configure</div>
-      <a class="nav-item" data-route="rules" href="#/rules"><span class="ni-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 7h-9"/><path d="M14 17H5"/><circle cx="17" cy="17" r="3"/><circle cx="7" cy="7" r="3"/></svg></span><span class="ni-label">Rules</span></a>
-      <a class="nav-item" data-route="templates" href="#/templates"><span class="ni-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg></span><span class="ni-label">Templates &amp; Imposition</span></a>
-      <a class="nav-item" data-route="skus" href="#/skus"><span class="ni-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.7 4 3 9 3s9-1.3 9-3V5"/><path d="M3 12c0 1.7 4 3 9 3s9-1.3 9-3"/></svg></span><span class="ni-label">SKU Database</span></a>
-      <a class="nav-item" data-route="printers" href="#/printers"><span class="ni-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M6 9V2h12v7"/><rect x="4" y="9" width="16" height="8" rx="2"/><path d="M6 17h12v5H6z"/><circle cx="17.5" cy="12.5" r="0.6" fill="currentColor"/></svg></span><span class="ni-label">Printers</span></a>
-      <a class="nav-item" data-route="workcenters" href="#/workcenters"><span class="ni-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M20 9h3M20 14h3M1 9h3M1 14h3"/></svg></span><span class="ni-label">Work-centers</span></a>
+
+      <div class="nav-group" id="setupGroup">
+        <button class="nav-group-head" id="setupToggle" aria-expanded="false" aria-controls="setupBody">
+          <span class="ni-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span>
+          <span class="ni-label">Setup</span><span class="ng-caret" aria-hidden="true">▾</span>
+        </button>
+        <div class="nav-group-body" id="setupBody" hidden>
+          <a class="nav-item" data-route="rules" href="#/rules"><span class="ni-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 7h-9"/><path d="M14 17H5"/><circle cx="17" cy="17" r="3"/><circle cx="7" cy="7" r="3"/></svg></span><span class="ni-label">Product (Batching Rules)</span></a>
+          <a class="nav-item" data-route="templates" href="#/templates"><span class="ni-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg></span><span class="ni-label">Templates &amp; Imposition</span></a>
+          <a class="nav-item" data-route="printers" href="#/printers"><span class="ni-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M6 9V2h12v7"/><rect x="4" y="9" width="16" height="8" rx="2"/><path d="M6 17h12v5H6z"/><circle cx="17.5" cy="12.5" r="0.6" fill="currentColor"/></svg></span><span class="ni-label">Printers</span></a>
+          <a class="nav-item" data-route="skus" href="#/skus"><span class="ni-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.7 4 3 9 3s9-1.3 9-3V5"/><path d="M3 12c0 1.7 4 3 9 3s9-1.3 9-3"/></svg></span><span class="ni-label">SKU Database</span></a>
+          <a class="nav-item" data-route="workcenters" href="#/workcenters"><span class="ni-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M20 9h3M20 14h3M1 9h3M1 14h3"/></svg></span><span class="ni-label">Work-centers</span></a>
+        </div>
+      </div>
+
+      <div class="nav-section">Quick Actions</div>
+      <a class="nav-item" data-route="printlabels" href="#/printlabels"><span class="ni-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg></span><span class="ni-label">Print Labels</span></a>
+      <a class="nav-item" data-route="reversal" href="#/reversal"><span class="ni-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-15-6.7L3 13"/></svg></span><span class="ni-label">Bulk Batch Reversal</span></a>
+
+      <div class="nav-section">Current Work</div>
+      <a class="nav-item work-filter" data-route="work" data-param="Amazon"    href="#/work/Amazon"><span class="wc-dot" style="background:#f59e0b"></span><span class="ni-label">Amazon</span><span class="ni-badge" data-wc="Amazon">0</span></a>
+      <a class="nav-item work-filter" data-route="work" data-param="Classic"   href="#/work/Classic"><span class="wc-dot" style="background:#7c3aed"></span><span class="ni-label">Classic</span><span class="ni-badge" data-wc="Classic">0</span></a>
+      <a class="nav-item work-filter" data-route="work" data-param="Bold"      href="#/work/Bold"><span class="wc-dot" style="background:#1e293b"></span><span class="ni-label">Bold</span><span class="ni-badge" data-wc="Bold">0</span></a>
+      <a class="nav-item work-filter" data-route="work" data-param="Reprint"   href="#/work/Reprint"><span class="wc-dot" style="background:#e11d48"></span><span class="ni-label">Reprint</span><span class="ni-badge" data-wc="Reprint">0</span></a>
+      <a class="nav-item work-filter" data-route="work" data-param="Essential" href="#/work/Essential"><span class="wc-dot" style="background:#0ea5e9"></span><span class="ni-label">Essential</span><span class="ni-badge" data-wc="Essential">0</span></a>
+      <a class="nav-item work-filter" data-route="work" data-param="Luxe"      href="#/work/Luxe"><span class="wc-dot" style="background:#d97706"></span><span class="ni-label">Luxe</span><span class="ni-badge" data-wc="Luxe">0</span></a>
+      <a class="nav-item work-filter" data-route="work" data-param="Mirror"    href="#/work/Mirror"><span class="wc-dot" style="background:#06b6d4"></span><span class="ni-label">Mirror</span><span class="ni-badge" data-wc="Mirror">0</span></a>
+      <a class="nav-item work-filter" data-route="work" data-param="Clear"     href="#/work/Clear"><span class="wc-dot" style="background:#64748b"></span><span class="ni-label">Clear</span><span class="ni-badge" data-wc="Clear">0</span></a>
+      <a class="nav-item work-filter" data-route="work" data-param="UV Print"  href="#/work/UV%20Print"><span class="wc-dot" style="background:#8b5cf6"></span><span class="ni-label">UV Print</span><span class="ni-badge" data-wc="UV Print">0</span></a>
+
       <div class="nav-foot">
         <div class="nav-foot-line">Prototype · real data snapshot</div>
         <div class="nav-foot-line" id="dataStamp">—</div>
@@ -80,6 +106,9 @@
   <script src="views/batch.js"></script>
   <script src="views/buckets.js"></script>
   <script src="views/batches.js"></script>
+  <script src="views/printlabels.js"></script>
+  <script src="views/reversal.js"></script>
+  <script src="views/work.js"></script>
   <script src="views/rules.js"></script>
   <script src="views/templates.js"></script>
   <script src="views/skus.js"></script>

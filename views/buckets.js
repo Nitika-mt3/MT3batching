@@ -34,7 +34,7 @@
     v.innerHTML = PB.pageHead({
       title: 'Buckets',
       sub: `${all.length} open · items waiting to reach threshold. Merge buckets to batch flexibly (HP can’t).`,
-      actions: `<button class="btn outline" data-go="batch">⊹ Scan more</button>`
+      actions: `<button class="btn outline" data-go="reprints">⊹ Scan more</button>`
     })
       + `<div class="grid-toolbar" style="margin-bottom:12px">
           <div class="qf"><span class="qf-ic">⌕</span><input id="bktSearch" aria-label="Search buckets" placeholder="Search barcode, order #, print code, rule…" value="${PB.esc(fq)}"></div>
@@ -160,7 +160,7 @@
       crumbs: [{ label: 'Buckets', route: ['buckets'] }, { label: k.rule }],
       title: `${PB.esc(k.rule)} <span class="badge ${k.progress >= 100 ? 'ok' : ''} dot" style="font-size:11px;vertical-align:middle">${k.progress}%</span>`,
       sub: `${PB.esc(k.template)} · waiting to reach threshold ${k.threshold}`,
-      actions: `<button class="btn outline" data-go="batch">⊹ Add via scan</button><button class="btn primary" data-now>Batch now → ${k.qty} units</button>`
+      actions: `<button class="btn outline" data-go="reprints">⊹ Add via scan</button><button class="btn primary" data-now>Batch now → ${k.qty} units</button>`
     })
       + `<div class="bkt-detail">
           <div class="card pad">

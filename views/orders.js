@@ -2,7 +2,8 @@
    An orders LEDGER: one row per order item across pool (waiting / needs-a-rule) + buckets (bucketed) + batches
    (batched, with its Batch #). Sync → auto-batch waiting orders (PB.ingest); per-row/bulk Reprint → auto-batch. */
 (function () {
-  const tabState = {};   // remember the active tab per page (orders / bulk) across re-renders
+  const tabState = {};       // remember the active STATE tab per page across re-renders
+  const channelState = {};   // remember the active CHANNEL sub-tab (all / direct / amazon) per page
 
   const statusCell = it => it.shipped_date
     ? `<span class="cell-tag ok" title="Shipped ${PB.esc(PB.fmt.date(it.shipped_date))}">Shipped</span>`
@@ -17,20 +18,28 @@
 
   // Shared ledger page (Orders + Amazon Bulk). cfg: { route, title, sub, dataFilter, reprintSub, syncText, batchSelText, emptyText, footNote }
   PB.inputsPage = function (v, cfg) {
-    const inCh = it => cfg.dataFilter(it);
+    // channel sub-tab (all / direct / amazon): a specific route param forces that channel; else remember the last pick
+    let channel = 'all';
+    if (cfg.channels) {
+      if (cfg.initialChannel && cfg.initialChannel !== 'all') { channel = cfg.initialChannel; channelState[cfg.route] = channel; }
+      else channel = channelState[cfg.route] || 'all';
+    }
+    const passCh = it => !cfg.channels || channel === 'all' || PB.channelOf(it) === channel;
+    const inCh = it => cfg.dataFilter(it) && passCh(it);
     // build one row per order item across the whole system; rows are WRAPPERS (keep __ref to the real object for sync)
-    function ledger() {
-      const out = [];
+    // pass `filter` to override inCh (e.g. channel-agnostic counts for the channel seg).
+    function ledger(filter) {
+      const out = []; const keep = filter || inCh;
       // wrapper rows only — never mutate the underlying pool/bucket/batch object (a stamped _uid would persist on
       // batch/bucket items). The per-render _uid maps the Reprint button back to its row within THIS render's rows.
       const push = (it, meta) => { out.push(Object.assign({ ...it }, meta, { _uid: PB.uid(), __ref: it })); };
-      (PB.state.pool || []).forEach(it => { if (!inCh(it)) return; const r = PB.resolveRule(it);
+      (PB.state.pool || []).forEach(it => { if (!keep(it)) return; const r = PB.resolveRule(it);
         push(it, { _state: r ? 'waiting' : 'needsRule', _ruleName: r ? r.name : '', _batchNo: '', _batchId: '' }); });
-      (PB.state.scanned || []).forEach(it => { if (!inCh(it)) return; const r = it._upload ? null : PB.resolveRule(it);   // staged on Direct
+      (PB.state.scanned || []).forEach(it => { if (!keep(it)) return; const r = it._upload ? null : PB.resolveRule(it);   // staged on Reprints/Manual
         push(it, { _state: 'staged', _ruleName: it._upload ? 'Test print' : (r ? r.name : ''), _batchNo: '', _batchId: '' }); });
-      (PB.state.buckets || []).forEach(b => (b.items || []).forEach(it => { if (!inCh(it)) return;
+      (PB.state.buckets || []).forEach(b => (b.items || []).forEach(it => { if (!keep(it)) return;
         push(it, { _state: 'bucketed', _ruleName: b.rule || '', _batchNo: '', _batchId: '' }); }));
-      (PB.state.batches || []).forEach(b => (b.items || []).forEach(it => { if (!inCh(it)) return;
+      (PB.state.batches || []).forEach(b => (b.items || []).forEach(it => { if (!keep(it)) return;
         push(it, { _state: 'batched', _ruleName: b.rule || '', _batchNo: b.number, _batchId: b.id }); }));
       return out;
     }
@@ -76,12 +85,21 @@
       if (api && api.destroy) { try { api.destroy(); } catch (e) {} }   // tear down the prior grid (frees its column-filter document listeners) before rebuilding
       const all = ledger();
       const counts = {}; TABS.forEach(t => counts[t.key] = all.filter(t.match).length);
+      // channel sub-tab counts are channel-AGNOSTIC (over the full page scope), so each pill shows its own total
+      const chAll = cfg.channels ? ledger(cfg.dataFilter) : null;
+      const CH = [['all', 'All'], ['direct', 'Direct'], ['amazon', 'Amazon']];
+      const chCount = k => k === 'all' ? chAll.length : chAll.filter(r => PB.channelOf(r) === k).length;
+      const chanSeg = cfg.channels
+        ? `<div class="seg chan-seg" id="ipChan" style="margin-bottom:12px">${CH.map(([k, l]) => `<button class="${channel === k ? 'active' : ''}" data-ch="${k}">${l} <span class="cnt">${chCount(k)}</span></button>`).join('')}</div>`
+        : '';
       v.innerHTML = PB.pageHead({ title: cfg.title, sub: cfg.sub, actions: `<button class="btn primary" id="ipSync">${cfg.syncText}</button>` })
+        + chanSeg
         + `<div class="tabs">${TABS.map(t => `<button class="tab ${tab === t.key ? 'active' : ''}" data-tab="${t.key}">${t.label}<span class="cnt">${counts[t.key]}</span></button>`).join('')}</div>
            <div class="card mergebar" id="ipSelBar" style="margin-bottom:14px;display:none"></div>
            <div id="grid"></div>
            <p class="page-sub" style="margin-top:10px">${cfg.footNote || ''}</p>`;
 
+      PB.qsa('[data-ch]', v).forEach(b => b.onclick = () => { channel = b.dataset.ch; channelState[cfg.route] = channel; render(); });
       PB.qsa('[data-tab]', v).forEach(b => b.onclick = () => { tab = b.dataset.tab; tabState[cfg.route] = tab; render(); });
 
       const data = tabRows(all);
@@ -118,7 +136,9 @@
     // ---- reprint: clone the underlying order as a reprint of this channel's sub-source → auto-batch ----
     function reprint(rows) {
       if (!rows.length) return;
-      const rps = rows.map(r => PB.makeReprint(r.__ref || r, cfg.reprintSub));
+      // on the merged Orders page, a reprint's sub-source follows the item's channel (Amazon → #3, Direct → #2)
+      const subOf = r => cfg.channels ? (PB.channelOf(r.__ref || r) === 'amazon' ? 'amazon' : 'orders') : cfg.reprintSub;
+      const rps = rows.map(r => PB.makeReprint(r.__ref || r, subOf(r)));
       const made = PB.ingest(rps, { auto: true });
       const parts = [`${made.batches.length} batch${made.batches.length !== 1 ? 'es' : ''}`, `${made.buckets.length} bucket${made.buckets.length !== 1 ? 's' : ''}`];
       if (made.pooled) parts.push(`${made.pooled} need a rule`);
@@ -147,14 +167,15 @@
     render();
   };
 
-  PB.view('orders', (v) => PB.inputsPage(v, {
+  PB.view('orders', (v, param) => PB.inputsPage(v, {
     route: 'orders', reprintSub: 'orders',
     title: 'Orders',
-    sub: 'Order ledger — new & reprint orders, what rule batches each, and which batch it landed in. Sync auto-batches waiting orders per the rules.',
-    dataFilter: it => !String(it.sku || '').toUpperCase().startsWith('AMZ-'),
+    sub: 'Order ledger — direct orders + Amazon bulk (AMZ-) + reprints. Use the sub-tabs to focus a channel. Sync auto-batches waiting orders per the rules.',
+    channels: true, initialChannel: (param === 'amazon' || param === 'direct') ? param : 'all',
+    dataFilter: () => true,   // all channels; the Direct/Amazon sub-tabs narrow it
     syncText: '⟳ Sync new orders → auto-batch',
     batchSelText: 'Batch selected',
     emptyText: 'No orders here.',
-    footNote: 'New orders auto-batch on sync; items with no matching rule wait in “Needs a rule”. Reprints from this page are reprint source #2 (Orders page) → auto-batched, separate from new orders.',
+    footNote: 'New orders auto-batch on sync; unmatched items wait in “Needs a rule”. Amazon bulk (AMZ- prefix) is the Amazon sub-tab and batches via the Amazon prefix rule. Reprints follow their channel — Direct = source #2, Amazon = source #3 — auto-batched and kept separate from new orders.',
   }));
 })();

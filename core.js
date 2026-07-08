@@ -3,7 +3,8 @@
    ========================================================================== */
 window.PB = (function () {
   const PB = { data:{}, state:{}, views:{}, routes:[
-    'dashboard','orders','bulk','batch','buckets','batches','rules','templates','skus','printers','workcenters' ] };
+    'orders','reprints','manual','buckets','batches','printlabels','reversal','work',
+    'rules','templates','skus','printers','workcenters','dashboard','bulk' ] };
   const LS = 'pb.state.v4';   // v4: enlarged scan pool (+52 items) so 'Simulate scan' has plenty to pull; supersedes v3 curated demo
 
   /* ---------- identity: logged-in account + selectable operator (activities record BOTH) ---------- */
@@ -44,6 +45,27 @@ window.PB = (function () {
     return 'Other'; };
   const CLASS_COLOR={Bold:'#1e293b',Classic:'#7c3aed',Essential:'#0ea5e9',Mirror:'#06b6d4',Luxe:'#d97706',Clear:'#64748b',Other:'#94a3b8'};
   PB.classColor=(c)=>CLASS_COLOR[c]||'#94a3b8';
+
+  /* ---------- channel (direct vs amazon) + Current-Work class filters (HP-faithful) ---------- */
+  PB.channelOf = (it) => (it && (it.source==='amazon' || String(it.sku||'').toUpperCase().startsWith('AMZ-'))) ? 'amazon' : 'direct';
+  PB._uvSet = null;   // sku(upper) → UV lookup, built once from sku_db; reset in seed()
+  PB.isUV = (it) => { if(!PB._uvSet){ PB._uvSet=new Set((((PB.data||{}).sku_db&&PB.data.sku_db.products)||[])
+      .filter(p=>p&&p.sku&&p.case_printing==='UV').map(p=>String(p.sku).toUpperCase())); }
+    return PB._uvSet.has(String((it&&it.sku)||'').toUpperCase()); };
+  // current-work population = items still waiting (pool) + accumulating in open buckets
+  PB.workPopulation = () => [ ...(PB.state.pool||[]), ...((PB.state.buckets||[]).flatMap(b=>b.items||[])) ];
+  PB.workMatch = {
+    Amazon:    it=>PB.channelOf(it)==='amazon',
+    Classic:   it=>PB.caseClass(it.case_type)==='Classic',
+    Bold:      it=>PB.caseClass(it.case_type)==='Bold',
+    Reprint:   it=>!!(it.is_reprint||it.source==='reprint'),
+    Essential: it=>PB.caseClass(it.case_type)==='Essential',
+    Luxe:      it=>PB.caseClass(it.case_type)==='Luxe',
+    Mirror:    it=>PB.caseClass(it.case_type)==='Mirror',
+    Clear:     it=>PB.caseClass(it.case_type)==='Clear',
+    'UV Print':it=>PB.isUV(it) };
+  PB.WORK_FILTERS = ['Amazon','Classic','Bold','Reprint','Essential','Luxe','Mirror','Clear','UV Print'];
+  PB.workCounts = () => { const pop=PB.workPopulation(), out={}; PB.WORK_FILTERS.forEach(k=>out[k]=pop.filter(PB.workMatch[k]).length); return out; };
 
   /* ---------- "Batch by" rendering (shared by buckets + batches) ----------
      A SPLIT dimension shows its single value (bold); a non-split dimension lists
@@ -621,6 +643,7 @@ window.PB = (function () {
 
   /* ---------- seed live state from snapshots ---------- */
   function seed(){
+    PB._uvSet = null;   // rebuild the UV lookup from the (possibly reloaded) sku_db
     PB.state.templates = buildTemplates();
     PB.state.rules = buildRules();   // curated Classic-sublimation + Amazon-bulk rules (data/rules.json, internal shape)
     // Curated demo items are pre-tagged (source / is_reprint / reprint_source / AMZ- sku) and carry a `_disp`
@@ -662,19 +685,32 @@ window.PB = (function () {
   PB.view=(name,fn)=>{ PB.views[name]=fn; };
   PB.link=(name,param)=> '#/'+name + (param!=null&&param!==''? '/'+encodeURIComponent(param):'');
   PB.go=(name,param)=>{ location.hash=PB.link(name,param); };
-  PB.route=()=>{ const h=(location.hash||'#/dashboard').replace(/^#\/?/,''); const i=h.indexOf('/');
+  PB.route=()=>{ const h=(location.hash||'#/batches').replace(/^#\/?/,''); const i=h.indexOf('/');
     const name=i<0?h:h.slice(0,i); const param=i<0?null:decodeURIComponent(h.slice(i+1));
-    return { name: PB.routes.includes(name)?name:'dashboard', param }; };
+    return { name: PB.routes.includes(name)?name:'batches', param }; };
   function render(){ const {name,param}=PB.route();
-    PB.qsa('.nav-item').forEach(a=>a.classList.toggle('active',a.dataset.route===name));
+    // two nav regions (sidebar + second bar): highlight by data-route; data-param scopes Current-Work class links
+    PB.qsa('[data-route]').forEach(a=>a.classList.toggle('active', a.dataset.route===name && (a.dataset.param==null || a.dataset.param===param)));
+    PB.syncSetupAccordion(name);   // auto-expand Setup when a Setup child route is active
     document.body.classList.remove('nav-open'); if(PB.drawer) PB.drawer.close(); if(PB.modal) PB.modal.close();
     const v=PB.qs('#view'); v.scrollTop=0;
-    try{ (PB.views[name]||PB.views.dashboard)(v, param); }catch(e){ v.innerHTML='<div class="empty">View error: '+PB.esc(e.message)+'</div>'; console.error(e); }
+    try{ (PB.views[name]||PB.views.batches)(v, param); }catch(e){ v.innerHTML='<div class="empty">View error: '+PB.esc(e.message)+'</div>'; console.error(e); }
     refreshNavCounts();
   }
   function refreshNavCounts(){ const bc=PB.qs('#navBucketCount'); if(bc) bc.textContent=PB.state.buckets.length;
-    const sc=PB.qs('#navScanCount'); if(sc) sc.textContent=PB.state.scanned.length?('· '+PB.state.scanned.length):''; }
+    const wc=PB.workCounts(); PB.qsa('[data-wc]').forEach(el=>{ const n=wc[el.dataset.wc]||0; el.textContent=n; el.classList.toggle('zero', n===0); }); }   // live Current-Work class counts
   PB.refreshNav=refreshNavCounts;
+
+  /* ---------- Setup sidebar accordion (net-new; uses a side key, NOT the pb.state seed) ---------- */
+  const SETUP_KEY='pb.ui.setupOpen', SETUP_ROUTES=['rules','templates','skus','printers','workcenters'];
+  PB.setSetupOpen=(open)=>{ const b=PB.qs('#setupBody'), t=PB.qs('#setupToggle'), g=PB.qs('#setupGroup'); if(!b||!t) return;
+    b.hidden=!open; t.setAttribute('aria-expanded',open?'true':'false'); if(g) g.classList.toggle('open',open);
+    try{ localStorage.setItem(SETUP_KEY, open?'1':'0'); }catch(e){} };
+  PB.syncSetupAccordion=(name)=>{ if(SETUP_ROUTES.includes(name)) PB.setSetupOpen(true); };
+  PB.initSetupAccordion=()=>{ const t=PB.qs('#setupToggle'); if(!t) return;
+    let saved; try{ saved=localStorage.getItem(SETUP_KEY); }catch(e){}
+    PB.setSetupOpen(SETUP_ROUTES.includes(PB.route().name) ? true : (saved==='1'));
+    t.onclick=()=>PB.setSetupOpen(!!PB.qs('#setupBody').hidden); };
 
   /* ---------- boot ---------- */
   async function load(name){ const r=await fetch('data/'+name+'.json'); return r.json(); }
@@ -701,10 +737,12 @@ window.PB = (function () {
     PB.qs('#refreshBtn').onclick=async ()=>{ if(await PB.confirm({title:'Reset prototype',message:'Reset prototype state to the fresh data snapshot?',confirmText:'Reset',danger:true})) PB.reset(); };
     // operator selector (activities log under this name; the logged-in account stays nitikaj@getmt3.com)
     { const op=PB.qs('#opPick'); if(op) PB.dropdown(op, { options:PB.operators, value:PB.operator, label:'operator', onChange:x=>{ PB.setOperator(x); PB.toast('Operating as '+x, 'info'); } }); }
-    PB.qsa('.nav-item').forEach(a=>a.addEventListener('click',()=>document.body.classList.remove('nav-open')));
+    PB.initSetupAccordion();   // collapsible Setup group (side key pb.ui.setupOpen)
+    { const pa=PB.qs('#prodArea'); if(pa) pa.onclick=()=>PB.go('batches'); }   // Production area → landing
+    PB.qsa('.nav-item, .subnav-item').forEach(a=>a.addEventListener('click',()=>document.body.classList.remove('nav-open')));
     PB.initGlobalSearch();
     window.addEventListener('hashchange',render);
-    if(!location.hash) location.hash='#/dashboard';
+    if(!location.hash) location.hash='#/batches';
     render();
   };
 
@@ -721,7 +759,7 @@ window.PB = (function () {
     PB.state.buckets.forEach(k=>{ if(g.bucket.length<PER && [(k.rule||''),(k.model||''),(k.case_type||'')].join(' ').toLowerCase().includes(q)) add('bucket', k.rule, (k.model||'')+' · '+(k.case_type||''), ['buckets',k.id]); });
     PB.state.rules.forEach(r=>{ if(g.rule.length<PER && (r.name||'').toLowerCase().includes(q)) add('rule', r.name, 'Batch rule · '+(r.template||''), ['rules',r.id]); });
     ((PB.data.sku_db&&PB.data.sku_db.products)||[]).forEach(p=>{ if(g.sku.length<PER && (p.sku||'').toLowerCase().includes(q)) add('sku', p.sku, (p.Model||'')+(p.CaseType?' · '+p.CaseType:''), ['skus',p.sku]); });
-    (PB.state.pool||[]).forEach(it=>{ if(g.order.length<PER && [(it.source_id||''),(it.component_barcode||''),(it.item_barcode||''),(it.print_sku||'')].join(' ').toLowerCase().includes(q)) add('order', it.source_id||it.component_barcode, (it.model||'')+(it.print_sku?' · '+it.print_sku:''), ['batch']); });
+    (PB.state.pool||[]).forEach(it=>{ if(g.order.length<PER && [(it.source_id||''),(it.component_barcode||''),(it.item_barcode||''),(it.print_sku||'')].join(' ').toLowerCase().includes(q)) add('order', it.source_id||it.component_barcode, (it.model||'')+(it.print_sku?' · '+it.print_sku:''), ['reprints']); });
     const out=[...g.batch,...g.bucket,...g.rule,...g.sku,...g.order], seen=new Set();
     return out.filter(r=>{ const kk=r.type+'|'+r.label; if(seen.has(kk)) return false; seen.add(kk); return true; }).slice(0,10);
   };
@@ -755,5 +793,6 @@ window.PB = (function () {
   };
 
   PB._seed = seed;  // exposed for headless tests
+  PB._render = render;  // exposed for headless router/active-state tests
   return PB;
 })();

@@ -29,7 +29,7 @@
   --r:10px; --r-sm:6px; --r-lg:12px;
   --sh-sm:0 1px 3px rgba(0,0,0,.05); --sh:0 4px 6px -1px rgba(0,0,0,.1),0 2px 4px -1px rgba(0,0,0,.06);
   --sh-lg:0 12px 40px rgba(0,0,0,.16);
-  --topbar-h:60px; --nav-w:228px;
+  --topbar-h:60px; --subnav-h:44px; --nav-w:228px;
   --font:'Segoe UI',-apple-system,BlinkMacSystemFont,'Roboto',sans-serif;
   --mono:'Consolas','SF Mono',Menlo,monospace;
   /* ---- canonical mt3narada theme.css names (1:1 parity / clean React port). Values match Pulse's
@@ -101,8 +101,8 @@ button{font-family:inherit}
 .nav-toggle{display:none}
 
 /* ---------- layout + sidenav ---------- */
-.layout{display:flex;padding-top:var(--topbar-h);min-height:100vh}
-.sidenav{position:fixed;top:var(--topbar-h);bottom:0;left:0;width:var(--nav-w);background:var(--card);
+.layout{display:flex;padding-top:calc(var(--topbar-h) + var(--subnav-h));min-height:100vh}
+.sidenav{position:fixed;top:calc(var(--topbar-h) + var(--subnav-h));bottom:0;left:0;width:var(--nav-w);background:var(--card);
   border-right:1px solid var(--nordic-border);padding:14px 12px;overflow-y:auto;z-index:50;display:flex;flex-direction:column;gap:3px}
 .nav-section{font-size:10.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--nordic-text-muted);padding:16px 12px 7px}
 .nav-section:first-child{padding-top:4px}
@@ -120,6 +120,47 @@ button{font-family:inherit}
 .nav-item.active .ni-tag{color:rgba(255,255,255,.85)}
 .nav-foot{margin-top:auto;padding:14px 12px 6px;border-top:1px solid var(--nordic-border);color:var(--faint);font-size:11px;line-height:1.6}
 .scrim{display:none}
+
+/* ---------- Production area button (top bar) ---------- */
+.area-btn{flex:none;height:34px;padding:0 15px;border:0;border-radius:8px;background:rgba(255,255,255,.16);color:#fff;
+  font-size:13.5px;font-weight:700;letter-spacing:.2px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:.15s}
+.area-btn:hover{background:rgba(255,255,255,.26)}
+.area-btn.active{background:rgba(255,255,255,.24);box-shadow:inset 0 0 0 1px rgba(255,255,255,.4)}
+.area-btn::before{content:"";width:7px;height:7px;border-radius:50%;background:#6ee7b7;box-shadow:0 0 0 3px rgba(110,231,183,.28)}
+
+/* ---------- second bar (Production sub-nav) ---------- */
+.subnav{position:fixed;top:var(--topbar-h);left:0;right:0;height:var(--subnav-h);z-index:900;display:flex;align-items:stretch;gap:2px;
+  padding:0 24px;background:#fff;border-bottom:1px solid var(--nordic-border);box-shadow:0 1px 4px rgba(15,23,42,.05);overflow-x:auto}
+.subnav-item{display:inline-flex;align-items:center;padding:0 16px;color:var(--gray-600);font-size:13.5px;font-weight:600;
+  border-bottom:3px solid transparent;white-space:nowrap;transition:color .15s}
+.subnav-item:hover{color:var(--primary)}
+.subnav-item.active{color:var(--primary);border-bottom-color:var(--primary)}
+
+/* ---------- collapsible Setup group (sidebar accordion) ---------- */
+.nav-group{display:flex;flex-direction:column;gap:3px}
+.nav-group-head{display:flex;align-items:center;gap:12px;width:100%;padding:9px 12px;border:0;border-radius:10px;background:none;
+  color:var(--gray-600);font-family:inherit;font-size:13.5px;font-weight:600;cursor:pointer;min-height:42px;text-align:left;transition:background .15s,color .15s}
+.nav-group-head:hover{background:var(--primary-soft);color:var(--primary)}
+.nav-group.open>.nav-group-head{color:var(--gray-800)}
+.ng-caret{margin-left:auto;font-size:11px;color:var(--faint);transition:transform .18s}
+.nav-group.open .ng-caret{transform:rotate(180deg)}
+.nav-group-body{display:flex;flex-direction:column;gap:3px}
+.nav-group-body[hidden]{display:none}
+.nav-group-body .nav-item{padding-left:24px;min-height:38px;font-size:13px}
+
+/* ---------- Current Work class filters ---------- */
+.wc-dot{width:9px;height:9px;border-radius:50%;flex:none}
+.work-filter{min-height:38px;font-size:13px;gap:10px}
+.work-filter .ni-badge{background:var(--primary-soft);color:var(--primary);min-width:22px}
+.work-filter.active .ni-badge{background:rgba(255,255,255,.28);color:#fff}
+.work-filter .ni-badge.zero{background:transparent;color:var(--faint);border:1px solid var(--nordic-border)}
+.work-filter.active .ni-badge.zero{background:rgba(255,255,255,.14);color:rgba(255,255,255,.8);border-color:transparent}
+
+/* ---------- segmented sub-tab counts (Orders channel seg) ---------- */
+.seg .cnt{display:inline-flex;min-width:18px;height:16px;align-items:center;justify-content:center;border-radius:8px;
+  background:var(--gray-200);color:var(--gray-600);font-size:10.5px;font-weight:700;padding:0 5px;margin-left:6px}
+.seg button.active .cnt{background:var(--primary-soft);color:var(--primary)}
+.chan-seg{margin-bottom:12px}
 
 /* ---------- main view ---------- */
 .view{flex:1;margin-left:var(--nav-w);padding:22px 24px 60px;min-width:0;max-width:none} /* full width on wide monitors (matches app-wide Pulse change) */
@@ -518,7 +559,7 @@ body.overlay-open{overflow:hidden}
   .metric-row{grid-template-columns:repeat(2,1fr)}
   .sidenav{transform:translateX(-100%);transition:transform .24s;width:248px;box-shadow:var(--sh-lg)}
   body.nav-open .sidenav{transform:none}
-  body.nav-open .scrim{display:block;position:fixed;inset:var(--topbar-h) 0 0 0;background:rgba(15,23,42,.4);z-index:45}
+  body.nav-open .scrim{display:block;position:fixed;inset:calc(var(--topbar-h) + var(--subnav-h)) 0 0 0;background:rgba(15,23,42,.4);z-index:45}
   .view{margin-left:0}
   .nav-toggle{display:grid}
   .scanwrap{grid-template-columns:1fr}

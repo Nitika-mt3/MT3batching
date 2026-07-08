@@ -19,7 +19,7 @@
       { headerName: 'Batched by', flex: 2, minWidth: 240, wrapText: true, autoHeight: true, valueGetter: p => PB.batchByText(p.data), cellRenderer: p => PB.batchByHtml(p.data) },
       { headerName: 'Template', field: 'template', minWidth: 150 },
       { headerName: 'Qty', field: 'qty', maxWidth: 90, type: 'numericColumn' },
-      { headerName: 'Status', field: 'status', maxWidth: 120, cellRenderer: p => `<span class="cell-tag ${p.value === 'live' ? 'live' : p.value === 'archived' ? '' : 'ok'}">${p.value}</span>` },
+      { headerName: 'Status', field: 'status', maxWidth: 120, cellRenderer: p => `<span class="cell-tag ${p.value === 'live' ? 'live' : (p.value === 'archived' || p.value === 'void') ? '' : 'ok'}">${p.value === 'void' ? 'reversed' : p.value}</span>` },
       { headerName: 'Created', field: 'created', minWidth: 120, valueFormatter: p => PB.fmt.ago(p.value) },
       { headerName: 'Actions', minWidth: 210, maxWidth: 260, sortable: false, filter: false, cellRenderer: p => rowActions(p.data.id) },
     ];
@@ -192,12 +192,15 @@
     greensheet_printed: { ic: '📄', label: 'Greensheet printed' },
     pdf_downloaded: { ic: '⤓', label: 'PDF downloaded' },
     archived: { ic: '📦', label: 'Batch archived' },
+    reversed: { ic: '↩', label: 'Batch reversed → items returned to pool' },
     'items-removed': { ic: '🗑', label: 'Items removed from sheet' },
   };
   function actItem(h) {
     const m = ACT[h.action] || { ic: '•', label: h.action || 'activity' };
     const extra = h.action === 'items-removed'
-      ? ` — ${h.count} item${h.count > 1 ? 's' : ''} (${(h.items || []).map(PB.esc).join(', ')}) · re-imposed ${h.fromUp}→${h.toUp}-up` : '';
+      ? ` — ${h.count} item${h.count > 1 ? 's' : ''} (${(h.items || []).map(PB.esc).join(', ')}) · re-imposed ${h.fromUp}→${h.toUp}-up`
+      : h.action === 'reversed'
+      ? ` — ${h.count} item${h.count > 1 ? 's' : ''} returned to ${PB.esc(h.returnedTo || 'pool')}` : '';
     const meta = [`<span class="act-who">${PB.esc(h.by || '—')}</span>`];
     if (h.printer) meta.push(`<span class="act-printer">${PB.esc(h.printer)}</span>`);
     if (h.account && h.account !== h.by) meta.push(`<span title="Logged-in account">acct: ${PB.esc(h.account)}</span>`);
