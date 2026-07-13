@@ -12,7 +12,6 @@
   <header class="topbar">
     <button class="iconbtn nav-toggle" id="navToggle" aria-label="Menu">☰</button>
     <a class="brand" href="#/batches"><span class="brand-mark">◧</span> Pulse <b>Batching</b></a>
-    <button class="area-btn active" id="prodArea" data-area="production" title="Production module">Production</button>
     <div class="global-search" id="gsWrap">
       <span class="gs-ic" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></span>
       <input id="globalSearch" type="search" placeholder="Search order #, barcode, SKU, model, case type, print code, batch…" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="gsPanel" aria-label="Global search" />
@@ -28,6 +27,8 @@
 
   <!-- Production sub-nav (second bar): the three work-intake surfaces -->
   <nav class="subnav" id="subnav" aria-label="Production work surfaces">
+    <button class="area-btn active" id="prodArea" data-area="production" title="Production module">Production</button>
+    <span class="subnav-sep" aria-hidden="true"></span>
     <a class="subnav-item" data-route="orders" href="#/orders">Orders</a>
     <a class="subnav-item" data-route="reprints" href="#/reprints">Reprints</a>
     <a class="subnav-item" data-route="manual" href="#/manual">Manual upload</a>
