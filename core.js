@@ -701,16 +701,28 @@ window.PB = (function () {
     const wc=PB.workCounts(); PB.qsa('[data-wc]').forEach(el=>{ const n=wc[el.dataset.wc]||0; el.textContent=n; el.classList.toggle('zero', n===0); }); }   // live Current-Work class counts
   PB.refreshNav=refreshNavCounts;
 
-  /* ---------- Setup sidebar accordion (net-new; uses a side key, NOT the pb.state seed) ---------- */
-  const SETUP_KEY='pb.ui.setupOpen', SETUP_ROUTES=['rules','templates','skus','printers','workcenters'];
+  /* ---------- Setup sidebar group → a right-side FLYOUT popover (net-new) ----------
+     A transient popover that pops out to the RIGHT of the sidebar, so full labels fit and it never
+     merges with the flat nav list. Opens on click; closes on selection / outside-click / Escape / route
+     change. The Setup header stays highlighted while a Setup child route is active. No persistence. */
+  const SETUP_ROUTES=['rules','templates','skus','printers','workcenters'];
+  function positionSetupFlyout(){ const b=PB.qs('#setupBody'), t=PB.qs('#setupToggle'), nav=PB.qs('#sidenav'); if(!b||!t||!nav) return;
+    if(window.matchMedia && window.matchMedia('(max-width:1024px)').matches){ b.style.left=''; b.style.top=''; b.style.maxHeight=''; return; }   // inline within the mobile drawer
+    const tr=t.getBoundingClientRect(), nr=nav.getBoundingClientRect(), vh=window.innerHeight||800;
+    b.style.left=Math.round(nr.right+6)+'px'; b.style.maxHeight=(vh-16)+'px';
+    let top=tr.top-6; const h=b.offsetHeight||260; if(top+h>vh-8) top=Math.max(8, vh-8-h);
+    b.style.top=Math.round(top)+'px'; }
   PB.setSetupOpen=(open)=>{ const b=PB.qs('#setupBody'), t=PB.qs('#setupToggle'), g=PB.qs('#setupGroup'); if(!b||!t) return;
     b.hidden=!open; t.setAttribute('aria-expanded',open?'true':'false'); if(g) g.classList.toggle('open',open);
-    try{ localStorage.setItem(SETUP_KEY, open?'1':'0'); }catch(e){} };
-  PB.syncSetupAccordion=(name)=>{ if(SETUP_ROUTES.includes(name)) PB.setSetupOpen(true); };
-  PB.initSetupAccordion=()=>{ const t=PB.qs('#setupToggle'); if(!t) return;
-    let saved; try{ saved=localStorage.getItem(SETUP_KEY); }catch(e){}
-    PB.setSetupOpen(SETUP_ROUTES.includes(PB.route().name) ? true : (saved==='1'));
-    t.onclick=()=>PB.setSetupOpen(!!PB.qs('#setupBody').hidden); };
+    if(open) positionSetupFlyout(); };
+  // called from render(): highlight Setup while on a child route + dismiss the transient flyout on any route change
+  PB.syncSetupAccordion=(name)=>{ const g=PB.qs('#setupGroup'); if(g) g.classList.toggle('child-active', SETUP_ROUTES.includes(name)); PB.setSetupOpen(false); };
+  PB.initSetupAccordion=()=>{ const t=PB.qs('#setupToggle'), g=PB.qs('#setupGroup'); if(!t) return;
+    PB.setSetupOpen(false); if(g) g.classList.toggle('child-active', SETUP_ROUTES.includes(PB.route().name));
+    t.onclick=(e)=>{ if(e&&e.stopPropagation) e.stopPropagation(); PB.setSetupOpen(!!PB.qs('#setupBody').hidden); };
+    document.addEventListener('mousedown',(e)=>{ const gg=PB.qs('#setupGroup'), b=PB.qs('#setupBody'); if(b && !b.hidden && gg && !(gg.contains&&gg.contains(e.target))) PB.setSetupOpen(false); });
+    document.addEventListener('keydown',(e)=>{ if(e.key==='Escape'){ const b=PB.qs('#setupBody'); if(b && !b.hidden) PB.setSetupOpen(false); } });
+    if(window.addEventListener) window.addEventListener('resize',()=>{ const b=PB.qs('#setupBody'); if(b && !b.hidden) positionSetupFlyout(); }); };
 
   /* ---------- boot ---------- */
   async function load(name){ const r=await fetch('data/'+name+'.json'); return r.json(); }

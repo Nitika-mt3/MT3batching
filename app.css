@@ -137,17 +137,32 @@ button{font-family:inherit}
 .subnav-item:hover{color:var(--primary)}
 .subnav-item.active{color:var(--primary);border-bottom-color:var(--primary)}
 
-/* ---------- collapsible Setup group (sidebar accordion) ---------- */
-.nav-group{display:flex;flex-direction:column;gap:3px}
+/* ---------- Setup group → right-side FLYOUT popover ---------- */
+.nav-group{position:relative;display:flex;flex-direction:column;gap:3px}
 .nav-group-head{display:flex;align-items:center;gap:12px;width:100%;padding:9px 12px;border:0;border-radius:10px;background:none;
   color:var(--gray-600);font-family:inherit;font-size:13.5px;font-weight:600;cursor:pointer;min-height:42px;text-align:left;transition:background .15s,color .15s}
 .nav-group-head:hover{background:var(--primary-soft);color:var(--primary)}
-.nav-group.open>.nav-group-head{color:var(--gray-800)}
+.nav-group.open>.nav-group-head{background:var(--primary-soft);color:var(--primary)}
+.nav-group.child-active>.nav-group-head{background:var(--gradient);color:#fff;box-shadow:0 6px 16px rgba(102,126,234,.35)}
+.nav-group.child-active>.nav-group-head .ng-caret{color:rgba(255,255,255,.85)}
 .ng-caret{margin-left:auto;font-size:11px;color:var(--faint);transition:transform .18s}
-.nav-group.open .ng-caret{transform:rotate(180deg)}
-.nav-group-body{display:flex;flex-direction:column;gap:3px}
+.nav-group.open .ng-caret{transform:rotate(-90deg)}
+.nav-group-body{position:fixed;z-index:1200;width:max-content;min-width:238px;max-width:300px;overflow:auto;
+  background:#fff;border:1px solid var(--nordic-border);border-radius:12px;box-shadow:var(--sh-lg);padding:8px;
+  display:flex;flex-direction:column;gap:2px;animation:flyIn .14s ease}
 .nav-group-body[hidden]{display:none}
-.nav-group-body .nav-item{padding-left:24px;min-height:38px;font-size:13px}
+.nav-group-body::before{content:"Setup";display:block;font-size:10.5px;font-weight:700;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--nordic-text-muted);padding:6px 10px 5px}
+.nav-group-body .nav-item{min-height:40px;font-size:13px}
+.nav-group-body .ni-label{overflow:visible;text-overflow:clip}
+@keyframes flyIn{from{opacity:0;transform:translateX(-6px)}to{opacity:1;transform:none}}
+/* on the mobile drawer the flyout has nowhere to pop → fall back to an inline list */
+@media (max-width:1024px){
+  .nav-group-body{position:static;width:auto;min-width:0;max-width:none;box-shadow:none;border:0;border-radius:0;
+    padding:0;background:transparent;animation:none;overflow:visible}
+  .nav-group-body::before{display:none}
+  .nav-group-body .nav-item{padding-left:24px}
+}
 
 /* ---------- Current Work class filters ---------- */
 .wc-dot{width:9px;height:9px;border-radius:50%;flex:none}
